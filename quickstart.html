@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DateKeep Quick Start Guide</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 24px; color: #111827; background: #F9FAFB; }
+    .container { max-width: 880px; margin: 0 auto; background: #FFFFFF; border-radius: 12px; padding: 24px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
+    h1 { font-size: 28px; margin: 0 0 12px; color: #0F766E; }
+    .subtitle { color: #6B7280; margin-bottom: 20px; }
+    h2 { font-size: 20px; margin: 24px 0 10px; color: #111827; }
+    ul { margin: 0 0 12px 18px; }
+    li { margin: 6px 0; }
+    .note { background: #ECFDF5; border: 1px solid #A7F3D0; padding: 12px; border-radius: 8px; color: #065F46; margin: 12px 0; }
+    .links { margin-top: 18px; }
+    .links a { color: #0EA5E9; text-decoration: none; margin-right: 14px; }
+    .links a:hover { text-decoration: underline; }
+    .cta { display: inline-block; background: #10B981; color: #fff; padding: 10px 14px; border-radius: 8px; text-decoration: none; margin-top: 6px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>DateKeep Quick Start Guide</h1>
+    <p class="subtitle">One page to get productive in minutes</p>
+
+    <h2>1. Install and Open</h2>
+    <ul>
+      <li>Install DateKeep and open the app.</li>
+      <li>Grant camera and notifications when prompted.</li>
+    </ul>
+
+    <h2>2. Add Your First Item</h2>
+    <ul>
+      <li>Tap “Capture Item”. Take a clear photo of the item.</li>
+      <li>Select the number of days or the date on the pop-up numeric keypad.</li>
+      <li>Confirm to save. The item appears in “Your Items”.</li>
+    </ul>
+
+    <h2>3. Smart Reminders</h2>
+    <ul>
+      <li>Go to Settings → Notifications to choose reminder timing (e.g., 1–7 days before expiry).</li>
+      <li>Enable sound or voice alerts if desired.</li>
+    </ul>
+
+    <h2>4. Process Items</h2>
+    <ul>
+      <li>Swipe an item card → “Mark as Used”.</li>
+      <li>Select “Before Expiry” or “After Expiry”. This updates achievements.</li>
+    </ul>
+
+    <h2>5. Achievements</h2>
+    <ul>
+      <li>Saved vs Expired: a simple distribution to visualize outcomes.</li>
+      <li>Saving Rate: percentage of saved items among saved + expired.</li>
+      <li>Timely Rate: used before expiry among used items.</li>
+      <li>Zero‑expiry streak: consecutive days without waste/late use.</li>
+    </ul>
+
+    <h2>6. Free Trial & Subscription</h2>
+    <ul>
+      <li>Free Trial: 3 days of premium access. After trial, the app switches to free mode.</li>
+      <li>Free Mode: keep your data; add up to 5 items. Upgrade for unlimited items and advanced features.</li>
+      <li>Open the Subscription page from the app or visit <a href="/subscription">/subscription</a>.</li>
+    </ul>
+
+    <div class="note">Tip: You can continue using the app after trial. Your data is preserved. Upgrade anytime to unlock full features.</div>
+
+    <h2>7. Privacy</h2>
+    <ul>
+      <li>Local‑first storage. Cloud features available when signed in.</li>
+      <li>No sensitive keys are stored in plain text.</li>
+    </ul>
+
+    <div class="links">
+      <a href="/terms-of-use.html">Terms of Use</a>
+      <a href="/privacy-policy.html">Privacy Policy</a>
+      <a class="cta" href="/subscription">Upgrade to Premium</a>
+    </div>
+  </div>
+</body>
+<script>
+  (function(){
+    if (location.pathname.endsWith('/public/quickstart.html')) {
+      var linkEls = document.querySelectorAll('.links a');
+      linkEls.forEach(function(a){ if (a.getAttribute('href').charAt(0) === '/') { a.setAttribute('href', a.getAttribute('href')); } });
+    }
+  })();
+</script>
+</html>
