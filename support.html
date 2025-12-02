@@ -293,10 +293,9 @@
   }
 
   const webFallback = (function(){
-    const base = location.origin + location.pathname;
     const p = new URLSearchParams(params);
     p.set('dk_web','1');
-    return base + '?' + p.toString();
+    return location.origin + '/auth-callback.html?' + p.toString();
   })();
 
   const ua = navigator.userAgent.toLowerCase();
@@ -317,16 +316,7 @@
 
   let navigatedFallback = false;
   function tryOpenApp() {
-    const start = Date.now();
-
     try { window.location.href = deeplink; } catch(_) {}
-
-    setTimeout(() => {
-      if (!navigatedFallback && document.visibilityState === 'visible' && Date.now() - start < 1500) {
-        navigatedFallback = true;
-        window.location.href = webFallback;
-      }
-    }, 1200);
   }
 
   async function copyLink() {
@@ -341,20 +331,13 @@
 
   function openInSystemBrowser() {
     try {
-      window.open(deeplink, '_blank');
-      setTimeout(() => {
-        if (document.visibilityState === 'visible') {
-          window.open(webFallback, '_blank');
-        }
-      }, 800);
+      window.open(webFallback, '_blank');
     } catch(_) {
       window.location.href = webFallback;
     }
   }
 
-  if (!isInAppBrowser && !isWebFallback) {
-    tryOpenApp();
-  }
+  // Disable auto attempt; keep helper visible until user acts
 
   btnOpen.addEventListener('click', tryOpenApp);
   btnCopy.addEventListener('click', copyLink);
