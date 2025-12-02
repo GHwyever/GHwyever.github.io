@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Auth Callback</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;background:#f8f9fa;color:#111827;margin:0}
+.wrap{max-width:640px;margin:0 auto;padding:24px}
+.card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.title{font-weight:600;font-size:18px;margin-bottom:6px}
+.sub{font-size:13px;color:#6b7280;margin-bottom:12px}
+.row{display:flex;gap:8px;align-items:center;margin-top:12px}
+.btn{appearance:none;border:1px solid #d1d5db;background:#f9fafb;color:#111827;border-radius:10px;padding:8px 12px;font-size:14px}
+.btn.primary{background:#10b981;color:#fff;border-color:#10b981}
+.field{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+input{width:100%;padding:10px;border:1px solid #d1d5db;border-radius:10px;font-size:14px}
+.hidden{display:none}
+.success{color:#059669}
+.error{color:#ef4444}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <div class="title" id="title">Processing…</div>
+    <div class="sub" id="sub">Please wait while we complete verification.</div>
+    <div class="field hidden" id="pw-fields">
+      <label for="pw1">New password</label>
+      <input id="pw1" type="password" autocomplete="new-password" placeholder="Enter new password">
+      <label for="pw2">Confirm password</label>
+      <input id="pw2" type="password" autocomplete="new-password" placeholder="Confirm new password">
+      <div class="row">
+        <button id="btn-set" class="btn primary">Set Password</button>
+      </div>
+    </div>
+    <div class="row">
+      <button id="btn-open" class="btn primary">Open App</button>
+      <button id="btn-copy" class="btn">Copy Deep Link</button>
+    </div>
+    <div class="sub" id="msg"></div>
+  </div>
+</div>
+<script>
+(function(){
+  var qsStr=(location.search||'').replace(/^\?/,'')+'&'+(location.hash||'').replace(/^#/,'');
+  var qs=new URLSearchParams(qsStr);
+  var type=qs.get('type')||'';
+  var tokenHash=qs.get('token_hash')||qs.get('token')||'';
+  var email=qs.get('email')||'';
+  var titleEl=document.getElementById('title');
+  var subEl=document.getElementById('sub');
+  var msgEl=document.getElementById('msg');
+  var pwBox=document.getElementById('pw-fields');
+  var btnSet=document.getElementById('btn-set');
+  var btnOpen=document.getElementById('btn-open');
+  var btnCopy=document.getElementById('btn-copy');
+
+  var SUPABASE_URL='https://mefnqfbquuotukekxsyk.supabase.co';
+  var SUPABASE_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1lZm5xZmJxdXVvdHVrZWt4c3lrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAxODgyOTYsImV4cCI6MjA3NTc2NDI5Nn0.fa0OTr2ePJ9UOavD0q6QXQwl4DjGSA8seAhzDVnHv1s';
+  var client=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON,{auth:{persistSession:false}});
+
+  function setStatus(t,s){titleEl.textContent=t;subEl.textContent=s||''}
+  function setMsg(text,ok){msgEl.textContent=text;msgEl.className=ok?'sub success':'sub error'}
+
+  var params=new URLSearchParams();
+  if(type)params.set('type',type);
+  if(tokenHash)params.set('token_hash',tokenHash);
+  if(email)params.set('email',email);
+  var deeplink='freshness://auth-callback?'+params.toString();
+
+  btnOpen.addEventListener('click',function(){try{location.href=deeplink;}catch(e){}}
+  );
+  btnCopy.addEventListener('click',async function(){try{await navigator.clipboard.writeText(deeplink);setMsg('Deep link copied. Open with system browser or installed app.',true);}catch(e){setMsg('Copy failed. Please copy manually: '+deeplink,false)}});
+
+  function verify(){
+    if(!type||!tokenHash){setStatus('Invalid link','Missing parameters');return}
+    client.auth.verifyOtp({type:type,token_hash:tokenHash,email:email}).then(function(r){
+      if(r.error){setStatus('Verification error',r.error.message||'Failed');return}
+      if(type==='recovery'){pwBox.classList.remove('hidden');setStatus('Set new password','Enter and confirm a new password')}
+      else{setStatus('Email verified','You can now log in in the app');}
+    }).catch(function(e){setStatus('Verification error',e&&e.message?e.message:'Failed')});
+  }
+
+  btnSet.addEventListener('click',function(){
+    var p1=document.getElementById('pw1').value||'';
+    var p2=document.getElementById('pw2').value||'';
+    if(p1.length<8){setMsg('Password must be at least 8 characters',false);return}
+    if(p1!==p2){setMsg('Passwords do not match',false);return}
+    client.auth.updateUser({password:p1}).then(function(r){
+      if(r.error){setMsg(r.error.message||'Update failed',false);return}
+      setMsg('Password updated. Please open the app and log in.',true);
+    }).catch(function(e){setMsg(e&&e.message?e.message:'Update failed',false)});
+  });
+
+  verify();
+})();
+</script>
+</body>
+</html>
